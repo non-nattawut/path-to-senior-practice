@@ -1,7 +1,6 @@
 package com.senior_course.practice.map;
 
 import javax.swing.*;
-import java.util.HashMap;
 
 public class MainMapPractice {
     static void main() {
@@ -13,26 +12,28 @@ public class MainMapPractice {
         myHashMap.put("C", 44444);
         myHashMap.put("A11", 0); // same hash key as "A"
 
-        print(myHashMap);
+//        print(myHashMap);
+        myHashMap.visualization();
 
         System.out.println("=============== next round ===============");
 
         myHashMap.put("A", 7777);
         myHashMap.put("A11", 55555);
-        print(myHashMap);
+//        print(myHashMap);
+        myHashMap.visualization();
     }
 
-    private static void print(MyHashMap myHashMap){
-        System.out.println("A : " + myHashMap.get("A"));
-        System.out.println("A2 : " + myHashMap.get("A2"));
-        System.out.println("A11 : " + myHashMap.get("A11"));
-        System.out.println("B : " + myHashMap.get("B"));
-        System.out.println("C : " + myHashMap.get("C"));
-        System.out.println("===== hash key =====");
-        System.out.println("A : " + myHashMap.getNode("A").getHashKey());
-        System.out.println("A2 : " + myHashMap.getNode("A2").getHashKey());
-        System.out.println("A11 : " + myHashMap.getNode("A11").getHashKey());
-        System.out.println("B : " + myHashMap.getNode("B").getHashKey());
-        System.out.println("C : " + myHashMap.getNode("C").getHashKey());
-    }
+//    private static void print(MyHashMap myHashMap){
+//        System.out.println("A : " + myHashMap.get("A"));
+//        System.out.println("A2 : " + myHashMap.get("A2"));
+//        System.out.println("A11 : " + myHashMap.get("A11"));
+//        System.out.println("B : " + myHashMap.get("B"));
+//        System.out.println("C : " + myHashMap.get("C"));
+//        System.out.println("===== hash key =====");
+//        System.out.println("A : " + myHashMap.getNode("A").getHashKey());
+//        System.out.println("A2 : " + myHashMap.getNode("A2").getHashKey());
+//        System.out.println("A11 : " + myHashMap.getNode("A11").getHashKey());
+//        System.out.println("B : " + myHashMap.getNode("B").getHashKey());
+//        System.out.println("C : " + myHashMap.getNode("C").getHashKey());
+//    }
 }
