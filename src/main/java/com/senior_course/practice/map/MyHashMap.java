@@ -29,8 +29,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         // same key => override value
         // set to last node if key not exist but has the same hash key
         nodes[hashKey].setValueOrNextNode(newNode);
-
-        return false;
+        return true;
     }
 
     @Override
@@ -40,7 +39,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     }
 
     private int getHashKey(K key) {
-        return key.hashCode() % currentCapacity;
+        return Math.abs(key.hashCode()) % currentCapacity;
     }
 
     private void scaleCapacity() {
@@ -73,7 +72,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
             if (node == null)
                 continue;
 
-            System.out.print("hashKey : " + node.hashKey + " : ");
+            System.out.printf("hashKey : %5s : ", node.hashKey);
 
             MyNode<K, V> nextNode = node;
             while (nextNode != null) {
@@ -85,7 +84,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         }
     }
 
-    public class MyNode<K, V> {
+    public static class MyNode<K, V> {
         final int hashKey;
         K key;
         V value;
@@ -99,7 +98,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         }
 
         void setValueOrNextNode(MyNode<K, V> newNode) {
-            if (this.key == newNode.key) { // same key => override value
+            if (this.key.equals(newNode.key)) { // same key => override value
                 this.value = newNode.value;
             } else if (this.next == null) { // set to last node if key not exist but has the same hash key
                 this.next = newNode;
@@ -109,7 +108,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         }
 
         V getValue(K key) {
-            if (this.key == key) {
+            if (this.key.equals(key)) {
                 return value;
             }
 
