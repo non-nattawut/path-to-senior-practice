@@ -16,7 +16,8 @@ public class MainListPractice {
         myList.remove(3);
         myList.print();
 
-        List<String> list = new ArrayList<>();
+        MyList<String> listStr = myList.filter(m -> (m % 2) == 0).map(Integer::toHexString);
+        listStr.print();
 
         System.out.println(myList.get(0));
     }

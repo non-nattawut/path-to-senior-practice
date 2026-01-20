@@ -1,6 +1,9 @@
 package com.senior_course.practice.list;
 
-import java.util.Collection;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.*;
 
 public class MyList<T> implements InterfaceMyList<T> {
     private final int INITIAL_SIZE = 16;
@@ -14,7 +17,7 @@ public class MyList<T> implements InterfaceMyList<T> {
     }
 
     public MyList(T[] data) {
-        int size = (data.length/INITIAL_SIZE + 1) * INITIAL_SIZE;
+        int size = (data.length / INITIAL_SIZE + 1) * INITIAL_SIZE;
         initSize(size);
         lastIndex = data.length;
 
@@ -44,20 +47,36 @@ public class MyList<T> implements InterfaceMyList<T> {
     }
 
     @Override
-    public MyList<T> map() {
-        return null;
+    public <R> MyList<R> map(Function<? super T, ? extends R> mapper) {
+        MyList<R> newList = new MyList<>();
+
+        for (T d : data) {
+            if (d != null){
+                R convertedData = mapper.apply(d);
+                newList.add(convertedData);
+            }
+        }
+
+        return newList;
     }
 
     @Override
-    public MyList<T> filter() {
-        return null;
+    public MyList<T> filter(Predicate<? super T> predicate) {
+        MyList<T> newList = new MyList<>();
+
+        for (T d : data) {
+            if (d != null && predicate.test(d))
+                newList.add(d);
+        }
+
+        return newList;
     }
 
-    static <T> MyList<T> of(T... data) {
+    public static <T> MyList<T> of(T... data) {
         return new MyList<>(data);
     }
 
-    static <T> MyList<T> of(Collection<T> data) {
+    public static <T> MyList<T> of(Collection<T> data) {
         MyList<T> myList = new MyList<>();
         for (T d : data) {
             myList.add(d);

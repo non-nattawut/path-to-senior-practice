@@ -1,5 +1,8 @@
 package com.senior_course.practice.list;
 
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 interface InterfaceMyList<T> {
     abstract void add(T data);
 
@@ -7,7 +10,7 @@ interface InterfaceMyList<T> {
 
     abstract void remove(int idx);
 
-    abstract InterfaceMyList<T> map();
+    abstract <R> InterfaceMyList<R> map(Function<? super T, ? extends R> mapper);
 
-    abstract InterfaceMyList<T> filter();
+    abstract InterfaceMyList<T> filter(Predicate<? super T> predicate);
 }
