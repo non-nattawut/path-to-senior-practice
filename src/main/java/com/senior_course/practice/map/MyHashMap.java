@@ -1,8 +1,10 @@
 package com.senior_course.practice.map;
 
+import com.senior_course.practice.exception.map.KeyNotFoundException;
+
 public class MyHashMap<K, V> implements MyMap<K, V> {
-    static final int INITIAL_CAPACITY = 16;
-    static final float SCALE_FACTOR = 0.75f;
+    static final int INITIAL_CAPACITY = 1 << 4; // 16
+    static final float SCALE_FACTOR = 0.5f; // 0.75f is slower in my code
 
     int currentCapacity = INITIAL_CAPACITY;
     int occupySlot = 0;
@@ -10,69 +12,76 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     MyNode<K, V>[] nodes = new MyNode[INITIAL_CAPACITY];
 
     @Override
-    public boolean put(K key, V value) {
-        // scale up Node capacity
-        if (occupySlot >= currentCapacity * SCALE_FACTOR) {
-            scaleCapacity();
-        }
-
+    public void put(K key, V value) {
         int hashKey = getHashKey(key);
-        MyNode<K, V> newNode = new MyNode<>(hashKey, key, value, null);
+        MyNode<K, V> newNode = new MyNode<>(key, value, null);
 
         // set a new Slot if no slot exist
         if (nodes[hashKey] == null) {
             nodes[hashKey] = newNode;
-            occupySlot += 1;
-            return true;
+            ++occupySlot;
+
+            // scale up Node capacity
+            if (occupySlot >= currentCapacity * SCALE_FACTOR) {
+                scaleCapacity();
+            }
+
+            return;
         }
 
         // same key => override value
         // set to last node if key not exist but has the same hash key
         nodes[hashKey].setValueOrNextNode(newNode);
-        return true;
     }
 
     @Override
     public V get(K key) {
         int hashKey = getHashKey(key);
-        return nodes[hashKey].getValue(key);
+
+        if (nodes[hashKey] == null)
+            throw new KeyNotFoundException(key);
+
+        // return MyNode give better performance than return value directly
+        return nodes[hashKey].getNodeByKey(key).value;
     }
 
     private int getHashKey(K key) {
-        return Math.abs(key.hashCode()) % currentCapacity;
+        // better performance than return Math.abs(key.hashCode()) % currentCapacity;
+        return key.hashCode() & (currentCapacity - 1);
     }
 
     private void scaleCapacity() {
-        currentCapacity *= 2;
+        currentCapacity = currentCapacity << 2; // better performance than currentCapacity *= 2
         occupySlot = 0;
 
         MyNode<K, V>[] oldNodes = nodes;
         nodes = new MyNode[currentCapacity];
 
         for (MyNode<K, V> oldNode : oldNodes) {
-            if (oldNode == null)
-                continue;
+            MyNode<K, V> currentOldNode = oldNode;
+            while (currentOldNode != null) {
+                MyNode<K, V> nextNodeOld = currentOldNode.next;
+                int newHashKey = getHashKey(currentOldNode.key);
 
-            MyNode<K, V> nextNode = oldNode;
-            while (nextNode != null) {
-                put(nextNode.key, nextNode.value);
-                nextNode = nextNode.next;
+                if (nodes[newHashKey] == null) {
+                    ++occupySlot;
+                }
+
+                currentOldNode.next = nodes[newHashKey];
+                nodes[newHashKey] = currentOldNode;
+
+                currentOldNode = nextNodeOld;
             }
         }
     }
 
-//    // Test purpose only
-//    public MyNode<K, V> getNode(K key) {
-//        return nodes[getHashKey(key)].getNodeByKey(key);
-//    }
-
     // Visualize the map
-    public void visualization(){
+    public void visualization() {
         for (MyNode<K, V> node : nodes) {
             if (node == null)
                 continue;
 
-            System.out.printf("hashKey : %5s : ", node.hashKey);
+            System.out.printf("hashKey : %5s : ", getHashKey(node.key));
 
             MyNode<K, V> nextNode = node;
             while (nextNode != null) {
@@ -85,52 +94,45 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     }
 
     public static class MyNode<K, V> {
-        final int hashKey;
         K key;
         V value;
         MyNode<K, V> next;
 
-        public MyNode(int hashKey, K key, V value, MyNode<K, V> next) {
-            this.hashKey = hashKey;
+        public MyNode(K key, V value, MyNode<K, V> next) {
             this.key = key;
             this.value = value;
             this.next = next;
         }
 
         void setValueOrNextNode(MyNode<K, V> newNode) {
-            if (this.key.equals(newNode.key)) { // same key => override value
-                this.value = newNode.value;
-            } else if (this.next == null) { // set to last node if key not exist but has the same hash key
-                this.next = newNode;
-            } else {
-                this.next.setValueOrNextNode(newNode);
+            MyNode<K, V> currentNode = this;
+            K key = newNode.key;
+
+            while (true) {
+                if (currentNode.key.equals(key)) { // same key => override value
+                    currentNode.value = newNode.value;
+                    break;
+                } else if (currentNode.next != null) {
+                    currentNode = currentNode.next;
+                } else { // set to last node if key not exist but has the same hash key
+                    newNode.next = this.next;
+                    this.next = newNode;
+                    break;
+                }
             }
         }
 
-        V getValue(K key) {
-            if (this.key.equals(key)) {
-                return value;
+        MyNode<K, V> getNodeByKey(K key) {
+            MyNode<K, V> currentNode = this;
+
+            while (currentNode != null) {
+                if (currentNode.key.equals(key))
+                    return currentNode;
+
+                currentNode = currentNode.next;
             }
 
-            if (next != null) {
-                return next.getValue(key);
-            }
-
-            throw new RuntimeException("Key not found : " + key);
+            throw new KeyNotFoundException(key);
         }
-
-//        // Test Purpose only
-//        MyNode<K, V> getNodeByKey(K key) {
-//            if (this.key == key || this.next == null) {
-//                return this;
-//            }
-//
-//            return this.next.getNodeByKey(key);
-//        }
-//
-//        // Test purpose only
-//        int getHashKey() {
-//            return hashKey;
-//        }
     }
 }

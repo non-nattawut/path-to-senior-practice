@@ -1,6 +1,18 @@
 package com.senior_course.practice.map;
 
+import java.util.HashMap;
+
 public class MainMapPractice {
+//    static void main(){
+//        HashMap<String, String> hashMap = new HashMap<>();
+//
+//        hashMap.put("test", "eiei");
+//        System.out.println(hashMap.get("test"));
+//
+//        hashMap.put("test", "eiei222");
+//        System.out.println(hashMap.get("test"));
+//    }
+
     static void main() {
         System.out.println("=============== key = String, value = int ===============");
         MyHashMap<String, Integer> myHashMap = new MyHashMap<>();
@@ -10,6 +22,7 @@ public class MainMapPractice {
         myHashMap.put("B", 9999);
         myHashMap.put("C", 3333);
         myHashMap.put("A11", 0); // same hash key as "A"
+
 
         myHashMap.visualization();
         printMyHashMap(myHashMap);
@@ -27,7 +40,7 @@ public class MainMapPractice {
         System.out.println("=============== key = int, value = double ===============");
         MyHashMap<Integer, Double> newHashMap = new MyHashMap<>();
         newHashMap.put(20, 2.0);
-        newHashMap.put(40, 123123.123);
+        newHashMap.put(999, 123123.123);
         newHashMap.put(0, 123123.123);
         newHashMap.put(-1, 123123.123);
         newHashMap.put(-2, 123123.123);
