@@ -14,6 +14,7 @@ public class MainListPractice {
 
         myList = MyList.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
         myList.remove(3);
+        myList.add(12);
         myList.print();
 
         MyList<String> listStr = myList.filter(m -> (m % 2) == 0).map(Integer::toHexString);

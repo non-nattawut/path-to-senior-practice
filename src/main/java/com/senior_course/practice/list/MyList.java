@@ -3,7 +3,6 @@ package com.senior_course.practice.list;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.*;
 
 public class MyList<T> implements InterfaceMyList<T> {
     private final int INITIAL_SIZE = 16;
@@ -26,7 +25,6 @@ public class MyList<T> implements InterfaceMyList<T> {
 
     @Override
     public void add(T data) {
-
         if (lastIndex + 1 == this.data.length) {
             resize();
         }
@@ -43,15 +41,19 @@ public class MyList<T> implements InterfaceMyList<T> {
     @Override
     public void remove(int idx) {
         T[] oldData = data;
-        System.arraycopy(oldData, idx + 1, data, idx, oldData.length - idx - 1);
+        System.arraycopy(oldData, idx + 1, data, idx, lastIndex - idx - 1);
+        data[lastIndex] = null;
+        --lastIndex;
     }
 
     @Override
     public <R> MyList<R> map(Function<? super T, ? extends R> mapper) {
         MyList<R> newList = new MyList<>();
 
-        for (T d : data) {
-            if (d != null){
+//        for (T d : data) {
+        for (int i = 0; i < lastIndex; i++) {
+            T d = data[i];
+            if (d != null) {
                 R convertedData = mapper.apply(d);
                 newList.add(convertedData);
             }
@@ -64,7 +66,9 @@ public class MyList<T> implements InterfaceMyList<T> {
     public MyList<T> filter(Predicate<? super T> predicate) {
         MyList<T> newList = new MyList<>();
 
-        for (T d : data) {
+//        for (T d : data) {
+        for (int i = 0; i < lastIndex; i++) {
+            T d = data[i];
             if (d != null && predicate.test(d))
                 newList.add(d);
         }
