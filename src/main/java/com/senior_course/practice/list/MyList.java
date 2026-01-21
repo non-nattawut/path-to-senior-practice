@@ -8,7 +8,7 @@ public class MyList<T> implements InterfaceMyList<T> {
     private final int INITIAL_SIZE = 16;
     private final int RESIZE_MULTIPLIER = 2;
 
-    private int lastIndex = 0;
+    private int lastIndex = 0; // point to free element that can add data into it
     private T[] data;
 
     public MyList() {
