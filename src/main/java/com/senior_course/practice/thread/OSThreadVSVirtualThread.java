@@ -3,7 +3,7 @@ package com.senior_course.practice.thread;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ThreadOldVsNewWay {
+public class OSThreadVSVirtualThread {
     static void main() {
         try {
             oldWay();
